@@ -146,7 +146,7 @@ public class App {
 		boolean opcionValida = false;
 		do {
 			do {
-				System.out.println(player.getNombre() + ", que deseas hacer?");
+				System.out.println("\n" + player.getNombre() + ", que deseas hacer?");
 				System.out.println("1) Revisar equipo.");
 				System.out.println("2) Salir a capturar.");
 				System.out.println("3) Acceso al PC (cambiar Pokémon del equipo).");
@@ -155,6 +155,7 @@ public class App {
 				System.out.println("6) Curar Pokémon.");
 				System.out.println("7) Guardar.");
 				System.out.println("8) Guardar y Salir.");
+				System.out.print("Ingrese Opcion: ");
 				try {
 					opcion = Integer.parseInt(sc.nextLine()); // Lee y convierte a int
 
@@ -172,6 +173,46 @@ public class App {
 			case 1:
 				break;
 			case 2:
+				do {
+					System.out.println("Donde deseas ir a explorar? \n\n Zonas disponibles:\n");
+					System.out.println("1) Lago");
+					System.out.println("2) Cueva");
+					System.out.println("3) Montaña");
+					System.out.println("4) Bosque");
+					System.out.println("5) Prado");
+					System.out.println("6) Mar");
+					System.out.println("7) Volver al menu.");
+					try {
+						opcion = Integer.parseInt(sc.nextLine()); // Lee y convierte a int
+
+						if (opcion >= 1 && opcion <= 7) {
+							opcionValida = true; // El número es válido, rompemos este mini-bucle
+						} else {
+							System.out.println("Error: El número debe ser 1, 2, 3, 4, 5, 6 u 7.\n");
+						}
+					} catch (NumberFormatException e) {
+						// Atrapa si pone letras como "a", "hola", etc.
+						System.out.println("Error: Ingresó una letra o carácter inválido. Debe ser un número.\n");
+					}
+				} while (!opcionValida);
+				switch(opcion) {
+				case 1:
+					break;
+				case 2:
+					
+					
+					break;
+				case 3: 
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				}
 				break;
 			case 3:
 				break;
@@ -187,7 +228,5 @@ public class App {
 				break;
 			}
 		} while (opcion != 8);
-
 	}
-
 }
