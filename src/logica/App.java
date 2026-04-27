@@ -38,6 +38,13 @@ public class App {
         } while (!opcionValida);
 		switch(opcion) {
 		case 1:
+			Jugador jugadorGuardado = cargarPartida();
+			if (jugadorGuardado != null) {
+				System.out.println("\n¡Bienvenido de vuelta, " + jugadorGuardado.getNombre()+ "!");
+				menuDeJuego(jugadorGuardado);
+			}else {
+				System.out.println("\nNo se encontró ninguna partida guardada o el archivo está vacío.");
+			}
 			break;
 		case 2:
 			System.out.print("Ingrese su Apodo: ");
@@ -73,6 +80,57 @@ public class App {
 			Pokemon nuevoPokemon = new Pokemon(nombre,habitat,porcentajeAparicion,vida,ataque,defensa,ataqueEspecial,defensaEspecial,velocidad,tipo);
 			pokedexGlobal.add(nuevoPokemon);
 		}
+	}
+	private static Jugador cargarPartida() {
+		File arch = new File("datos/Registrox.txt");
+		if (!arch.exists() || arch.length() == 0) {
+			return null;
+		}
+		try {
+			Scanner lectorRegistro = new Scanner(arch);
+			if (lectorRegistro.hasNextLine()) {
+				//leer datos
+				String linea = lectorRegistro.nextLine();
+				String[] partes = linea.split(";");
+				
+				Jugador player = new Jugador(partes[0]);
+				player.setMedallas(Integer.parseInt(partes[1]));
+				//Vemos que pokemons estan guardados
+				while(lectorRegistro.hasNextLine()) {
+					String lineaPokemon = lectorRegistro.nextLine();
+					if (lineaPokemon.trim().isEmpty()) continue;
+					String[] partesPokemon = lineaPokemon.split(";");
+					String nombrePokemon = partesPokemon[0];
+					String estadoPokemon = partesPokemon[1];
+					
+					Pokemon poke = clonarPokemonPokedex(nombrePokemon);
+					
+					if (poke != null) {
+						poke.setEstado(estadoPokemon);
+						if (player.getEquipo().size() < 6) {
+							player.getEquipo().add(poke);
+						}else {
+							player.getPc().add(poke);
+						}
+					}
+				}
+				lectorRegistro.close();
+				return player; //Retornamos jugador armado
+			}
+		}catch(Exception e) {
+			System.out.println("Error al intentar leer el archivo Registros.txt");
+		}
+		return null;
+	}
+	private static Pokemon clonarPokemonPokedex(String nombrePokemon) {
+		for(Pokemon p : pokedexGlobal) {
+			if (p.getNombre().equalsIgnoreCase(nombrePokemon)) {
+				//Creamos el pokemon
+				return new Pokemon(p.getNombre(),p.getHabitat(),p.getPorcentajeAparicion(),p.getVida(),p.getAtaque(),p.getDefensa(),
+						p.getAtaqueEspecial(),p.getDefensaEspecial(),p.getVelocidad(),p.getTipo());
+			}
+		}
+		return null;//Si el pokemon no existe en la pokedex
 	}
 	private static void menuDeJuego(Jugador player) {
 		int opcion = 0;
