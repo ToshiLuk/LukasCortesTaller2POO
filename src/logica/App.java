@@ -51,7 +51,18 @@ public class App {
 		int opcion = 0;
 		do {
 			System.out.println(player + ", que deseas hacer?");
-		}while(opcion != 7 || opcion != 8);
+			System.out.println("1) Revisar equipo.");
+			System.out.println("2) Salir a capturar.");
+			System.out.println("3) Acceso al PC (cambiar Pokémon del equipo).");
+			System.out.println("4) Retar un gimnasio.");
+			System.out.println("5) Desafío Al Alto Mando.");
+			System.out.println("6) Curar Pokémon.");
+			System.out.println("7) Guardar.");
+			System.out.println("8) Guardar y Salir.");
+			switch(opcion) {
+			
+			}
+		}while(opcion != 8);
 		
 	}
 
