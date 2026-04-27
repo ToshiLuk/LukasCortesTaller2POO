@@ -1,16 +1,22 @@
 package logica;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import dominio.Jugador;
+import dominio.Pokemon;
 
 public class App {
 	public static Scanner sc = new Scanner(System.in);
 	public static Scanner lector;
-	public static void main(String[] args) {
+	public static ArrayList<Pokemon> pokedexGlobal;
+	public static void main(String[] args) throws FileNotFoundException {
 		int opcion = 0;
 		boolean opcionValida = false; //Controla el bucle
+		leerPokedex();
 		do {
 		do {
 			System.out.println("1) Continuar.");
@@ -46,6 +52,27 @@ public class App {
 			break;
 		}
 		}while(opcion != 3);
+	}
+	private static void leerPokedex() throws FileNotFoundException {
+		File arch = new File("datos/Pokedex.txt");
+		lector = new Scanner(arch);
+		while(lector.hasNextLine()) {
+			String linea = lector.nextLine();
+			String[] partes = linea.split(";");
+			String nombre = partes[0].strip();
+			String habitat = partes[1].strip();
+			double porcentajeAparicion = Double.parseDouble(partes[2].strip());
+			int vida = Integer.parseInt(partes[3].strip());
+			int ataque = Integer.parseInt(partes[4].strip());
+			int defensa = Integer.parseInt(partes[5].strip());
+			int ataqueEspecial = Integer.parseInt(partes[6].strip());
+			int defensaEspecial = Integer.parseInt(partes[7].strip());
+			int velocidad = Integer.parseInt(partes[8].strip());
+			String tipo = partes[9].strip();
+			//Ya guardado toda la info ahora creamos el 
+			Pokemon nuevoPokemon = new Pokemon(nombre,habitat,porcentajeAparicion,vida,ataque,defensa,ataqueEspecial,defensaEspecial,velocidad,tipo);
+			pokedexGlobal.add(nuevoPokemon);
+		}
 	}
 	private static void menuDeJuego(Jugador player) {
 		int opcion = 0;

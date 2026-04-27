@@ -13,7 +13,7 @@ public class Pokemon {
 	private String tipo;
 	private String estado;//Vivo o debilitado
 	public Pokemon(String nombre, String habitat, double porcentajeAparicion, int vida, int ataque, int defensa,
-			int ataqueEspecial, int defensaEspecial, int velocidad, String tipo, String estado) {
+			int ataqueEspecial, int defensaEspecial, int velocidad, String tipo) {
 		this.nombre = nombre;
 		this.habitat = habitat;
 		this.porcentajeAparicion = porcentajeAparicion;
