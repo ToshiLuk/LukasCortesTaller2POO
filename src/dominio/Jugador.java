@@ -1,6 +1,5 @@
 package dominio;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Jugador {
