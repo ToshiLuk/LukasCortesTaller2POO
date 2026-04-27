@@ -12,7 +12,7 @@ import dominio.Pokemon;
 public class App {
 	public static Scanner sc = new Scanner(System.in);
 	public static Scanner lector;
-	public static ArrayList<Pokemon> pokedexGlobal;
+	public static ArrayList<Pokemon> pokedexGlobal = new ArrayList<>();
 	public static void main(String[] args) throws FileNotFoundException {
 		int opcion = 0;
 		boolean opcionValida = false; //Controla el bucle
