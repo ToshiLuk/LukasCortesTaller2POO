@@ -174,7 +174,7 @@ public class App {
 				break;
 			case 2:
 				do {
-					System.out.println("Donde deseas ir a explorar? \n\n Zonas disponibles:\n");
+					System.out.println("Donde deseas ir a explorar? \n Zonas disponibles:\n");
 					System.out.println("1) Lago");
 					System.out.println("2) Cueva");
 					System.out.println("3) Montaña");
@@ -182,6 +182,7 @@ public class App {
 					System.out.println("5) Prado");
 					System.out.println("6) Mar");
 					System.out.println("7) Volver al menu.");
+					System.out.print("Ingrese Zona: ");
 					try {
 						opcion = Integer.parseInt(sc.nextLine()); // Lee y convierte a int
 
@@ -224,11 +225,35 @@ public class App {
 					
 					System.out.println("\nQue deseas hacer?");
 					System.out.println("1) Capturar");
+					System.out.println("2) Huir");
 					System.out.print("Ingrese Opción: ");
 					int accion = Integer.parseInt(sc.nextLine());
 					
 					if (accion == 1) {
-						
+						//Ya fue capturado?
+						boolean posesion = false;
+						for(Pokemon p : player.getEquipo()) {
+							if (p.getNombre().equals(pokemonSalvaje.getNombre())) posesion = true;
+						}
+						for(Pokemon p : player.getPc()) {
+							if (p.getNombre().equals(pokemonSalvaje.getNombre())) posesion = true;
+						}
+						if (posesion) {
+							System.out.println("\nCalmado Entrenador!! Ya has capturado a " + pokemonSalvaje.getNombre() + ".\n");
+						}else {
+							//Agregamos a equipo o pc
+							System.out.println(pokemonSalvaje.getNombre() + " capturado con exito!!");
+							
+							if (player.getEquipo().size()< 6) {
+								player.getEquipo().add(pokemonSalvaje);
+								System.out.println(pokemonSalvaje.getNombre() + " a sido agregado a tu equipo!");
+							}else {
+								player.getPc().add(pokemonSalvaje);
+								System.out.println(pokemonSalvaje.getNombre() + " ha sido enviado al PC!");
+							}
+						}
+					}else {
+						System.out.println("\nHuiste del combate sin problemas...");
 					}
 				}
 				break;
