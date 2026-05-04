@@ -171,6 +171,11 @@ public class App {
 			} while (!opcionValida);
 			switch (opcion) {
 			case 1:
+				int cont = 0;
+				System.out.println("\nEquipo Actual:");
+				for (Pokemon p : player.getEquipo()) {
+					System.out.println(cont+1 + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
+				}
 				break;
 			case 2:
 				do {

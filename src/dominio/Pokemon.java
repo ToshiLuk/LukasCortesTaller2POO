@@ -65,5 +65,7 @@ public class Pokemon {
 	public String getTipo() {
 		return tipo;
 	}
-	
+	public int getStats() {
+		return vida + ataque + defensa + ataqueEspecial + defensaEspecial + velocidad;
+	}
 }
