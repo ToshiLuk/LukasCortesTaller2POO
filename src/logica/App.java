@@ -195,23 +195,41 @@ public class App {
 						System.out.println("Error: Ingresó una letra o carácter inválido. Debe ser un número.\n");
 					}
 				} while (!opcionValida);
+				String habitat = "";
 				switch(opcion) {
 				case 1:
+					habitat = "Lago";
 					break;
 				case 2:
-					
-					
+					habitat = "Cueva";
 					break;
 				case 3: 
+					habitat = "Montaña";
 					break;
 				case 4:
+					habitat = "Bosque";
 					break;
 				case 5:
+					habitat = "Prado";
 					break;
 				case 6:
+					habitat = "Mar";
 					break;
 				case 7:
-					break;
+					break;//Nos devolvemos
+				}
+				if (!habitat.isEmpty()) {
+					Pokemon pokemonSalvaje = encontrarPokemon(habitat);
+					System.out.println("\nOh!! Ha aparecido un increible " + pokemonSalvaje.getNombre()+ "!!");
+					
+					System.out.println("\nQue deseas hacer?");
+					System.out.println("1) Capturar");
+					System.out.print("Ingrese Opción: ");
+					int accion = Integer.parseInt(sc.nextLine());
+					
+					if (accion == 1) {
+						
+					}
 				}
 				break;
 			case 3:
@@ -228,5 +246,30 @@ public class App {
 				break;
 			}
 		} while (opcion != 8);
+	}
+
+	private static Pokemon encontrarPokemon(String habitat) {
+		ArrayList<Pokemon> posiblesEncuentros = new ArrayList<>();// Lista en donde guardamos los pokemon del habitat
+																	// seleccionado
+		for (Pokemon p : pokedexGlobal) {
+			if (p.getHabitat().equalsIgnoreCase(habitat)) {
+				posiblesEncuentros.add(p);
+			}
+		}
+		java.util.Random random = new java.util.Random();
+		double roll = random.nextDouble();// Un decimal aleatorio para buscar el pokemon
+
+		double probTotal = 0.0;
+		for (Pokemon p : posiblesEncuentros) {// Recorremos la lista hasta que la suma sea igual roll
+			probTotal += p.getPorcentajeAparicion();
+
+			if (roll <= probTotal) {
+				return clonarPokemonPokedex(p.getNombre());// Volvemos a usar el metodo para que nos de una pokemon
+															// copia
+			}
+		}
+		return clonarPokemonPokedex(posiblesEncuentros.get(posiblesEncuentros.size() - 1).getNombre());// Por si falla
+																										// buscarlo con
+																										// los decimales
 	}
 }
