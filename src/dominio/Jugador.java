@@ -32,5 +32,4 @@ public class Jugador {
 	public ArrayList<Pokemon> getPc() {
 		return pc;
 	}
-	
 }

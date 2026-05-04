@@ -144,6 +144,7 @@ public class App {
 	private static void menuDeJuego(Jugador player) {
 		int opcion = 0;
 		boolean opcionValida = false;
+		int cont = 0;
 		do {
 			do {
 				System.out.println("\n" + player.getNombre() + ", que deseas hacer?");
@@ -171,15 +172,19 @@ public class App {
 			} while (!opcionValida);
 			switch (opcion) {
 			case 1:
-				int cont = 0;
+				cont = 0; // Contador para printear el primer numero
 				System.out.println("\nEquipo Actual:");
-				for (Pokemon p : player.getEquipo()) {
-					System.out.println(cont+1 + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
+				for (Pokemon p : player.getEquipo()) {// Recorremos el equipo
+					cont += 1;
+					System.out.println(
+							cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());// Printeamos
+																													// cada
+																													// equipo
 				}
 				break;
 			case 2:
 				do {
-					System.out.println("Donde deseas ir a explorar? \n Zonas disponibles:\n");
+					System.out.println("Donde deseas ir a explorar? \n\nZonas disponibles:\n");
 					System.out.println("1) Lago");
 					System.out.println("2) Cueva");
 					System.out.println("3) Montaña");
@@ -202,14 +207,14 @@ public class App {
 					}
 				} while (!opcionValida);
 				String habitat = "";
-				switch(opcion) {
+				switch (opcion) {
 				case 1:
 					habitat = "Lago";
 					break;
 				case 2:
 					habitat = "Cueva";
 					break;
-				case 3: 
+				case 3:
 					habitat = "Montaña";
 					break;
 				case 4:
@@ -222,47 +227,98 @@ public class App {
 					habitat = "Mar";
 					break;
 				case 7:
-					break;//Nos devolvemos
+					break;// Nos devolvemos
 				}
 				if (!habitat.isEmpty()) {
 					Pokemon pokemonSalvaje = encontrarPokemon(habitat);
-					System.out.println("\nOh!! Ha aparecido un increible " + pokemonSalvaje.getNombre()+ "!!");
-					
+					System.out.println("\nOh!! Ha aparecido un increible " + pokemonSalvaje.getNombre() + "!!");
+
 					System.out.println("\nQue deseas hacer?");
 					System.out.println("1) Capturar");
 					System.out.println("2) Huir");
 					System.out.print("Ingrese Opción: ");
 					int accion = Integer.parseInt(sc.nextLine());
-					
+
 					if (accion == 1) {
-						//Ya fue capturado?
+						// Ya fue capturado?
 						boolean posesion = false;
-						for(Pokemon p : player.getEquipo()) {
-							if (p.getNombre().equals(pokemonSalvaje.getNombre())) posesion = true;
+						for (Pokemon p : player.getEquipo()) {
+							if (p.getNombre().equals(pokemonSalvaje.getNombre()))
+								posesion = true;
 						}
-						for(Pokemon p : player.getPc()) {
-							if (p.getNombre().equals(pokemonSalvaje.getNombre())) posesion = true;
+						for (Pokemon p : player.getPc()) {
+							if (p.getNombre().equals(pokemonSalvaje.getNombre()))
+								posesion = true;
 						}
 						if (posesion) {
-							System.out.println("\nCalmado Entrenador!! Ya has capturado a " + pokemonSalvaje.getNombre() + ".\n");
-						}else {
-							//Agregamos a equipo o pc
+							System.out.println(
+									"\nCalmado Entrenador!! Ya has capturado a " + pokemonSalvaje.getNombre() + ".");
+						} else {
+							// Agregamos a equipo o pc
 							System.out.println(pokemonSalvaje.getNombre() + " capturado con exito!!");
-							
-							if (player.getEquipo().size()< 6) {
+
+							if (player.getEquipo().size() < 6) {
 								player.getEquipo().add(pokemonSalvaje);
 								System.out.println(pokemonSalvaje.getNombre() + " a sido agregado a tu equipo!");
-							}else {
+							} else {
 								player.getPc().add(pokemonSalvaje);
 								System.out.println(pokemonSalvaje.getNombre() + " ha sido enviado al PC!");
 							}
 						}
-					}else {
+					} else {
 						System.out.println("\nHuiste del combate sin problemas...");
 					}
 				}
 				break;
 			case 3:
+					cont = 0;
+					opcion = 0;
+					System.out.println("\n=== Acceso al PC ===");
+					System.out.println("Equipo:");
+					for (Pokemon p : player.getEquipo()) {// Printeamos equipo
+						cont += 1;
+						System.out.println(
+								cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
+					}
+					System.out.println("PC:");
+					for (Pokemon p : player.getPc()) {// Printeamos el pc sin resetear el contador
+						cont += 1;
+						System.out.println(
+								cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
+					}
+					System.out.println("1) Cambiar Pokemon.");
+					System.out.println("2) Salir.");
+					System.out.print("> ");
+					opcion = Integer.parseInt(sc.nextLine());
+					if (opcion == 1) {
+						if (player.getPc().isEmpty()) {
+							System.out.println("\nNo tienes Pokemon en el PC para intercambiar.");
+							break;
+						}
+						System.out.println("¿Que Pokemon de su equipo va a cambiar?(Ingrese su indice)");
+						System.out.print("> ");
+						int opcionEquipo = Integer.parseInt(sc.nextLine());
+						System.out.println("¿Que Pokemon del PC quiere traer a su equipo?(Ingrese el indice)");
+						System.out.print(">");
+						int opcionPC = Integer.parseInt(sc.nextLine());
+						int indiceEquipo = opcionEquipo - 1;
+						int indicePC = opcionPC - 1 - player.getEquipo().size();
+						if (indiceEquipo >= 0 && indiceEquipo < player.getEquipo().size() && indicePC >= 0
+								&& indicePC< player.getPc().size()) {
+							// Guardamos ambos pokemon
+							Pokemon auxE = player.getEquipo().get(indiceEquipo);
+							Pokemon auxPC = player.getPc().get(indicePC);
+							// .set para cambiar los arraylist
+							player.getEquipo().set(indiceEquipo, auxPC);
+							player.getPc().set(indicePC, auxE);
+
+							System.out.println("\n¡Intercambio exitoso!");
+							System.out.println(auxPC.getNombre() + " ahora está en tu equipo.");
+						} else {
+							System.out.println("\nError: Numeros ingresados fuera de rango.");
+						}
+					}
+				
 				break;
 			case 4:
 				break;
