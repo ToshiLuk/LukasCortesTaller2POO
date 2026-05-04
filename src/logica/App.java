@@ -1,7 +1,10 @@
 package logica;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -176,10 +179,9 @@ public class App {
 				System.out.println("\nEquipo Actual:");
 				for (Pokemon p : player.getEquipo()) {// Recorremos el equipo
 					cont += 1;
-					System.out.println(
-							cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());// Printeamos
-																													// cada
-																													// equipo
+					System.out.println(cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());// Printeamos
+																															// cada
+																															// equipo
 				}
 				break;
 			case 2:
@@ -327,11 +329,41 @@ public class App {
 			case 6:
 				break;
 			case 7:
+				guardarPartida(player);
 				break;
 			case 8:
-				break;
+				guardarPartida(player);
+				System.out.println("Nos vemos entrenador...");
+				System.exit(0);//Para matar el menu
 			}
 		} while (opcion != 8);
+	}
+
+	private static void guardarPartida(Jugador player) {
+		try {
+			//Archivo
+			File arch = new File("datos/Registros.txt");
+			//El FileWriter abre el txt y el false hace que sobrescriba en vez de añadir texto
+			java.io.FileWriter fw = new java.io.FileWriter(arch, false);
+			java.io.BufferedWriter writer = new java.io.BufferedWriter(fw);
+			//Escribimos el jugador y sus medallas en el txt
+			writer.write(player.getNombre() + ";" + player.getMedallas());
+			writer.newLine();//Salto de linea
+			//Escribimos los Pokemons del equipo
+			for(Pokemon p : player.getEquipo()) {
+				writer.write(p.getNombre() + ";" + p.getEstado());
+				writer.newLine();
+			}
+			//Escribimos los Pokemons del PC
+			for(Pokemon p : player.getPc()) {
+				writer.write(p.getNombre() + ";" + p.getEstado());
+				writer.newLine();
+			}
+			writer.close();
+			System.out.println("\nPartida guardada con exito!");
+		}catch(java.io.IOException e) {
+			System.out.println("Error: Hubo un problema de escritura al intentar guardar la partida.");
+		}
 	}
 
 	private static Pokemon encontrarPokemon(String habitat) {
