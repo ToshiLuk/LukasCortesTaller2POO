@@ -1,5 +1,4 @@
 package logica;
-
 //Lukas Paolo Toshisuke Cortés Alfaro, 22.108.123-4, ICCI
 import java.io.BufferedWriter;
 import java.io.File;
@@ -171,7 +170,14 @@ public class App {
 				String[] partes = linea.split(";");
 
 				Jugador player = new Jugador(partes[0]);
-				player.setMedallas(Integer.parseInt(partes[1]));
+				
+				for(int i = 1; i<partes.length; i++) {
+					player.getDerrotados().add(partes[i]);
+					if(lideresGym.get(i-1).getLider().equals(player.getDerrotados().get(i-1))) {
+						lideresGym.get(i-1).setEstado("Derrotado");
+					}
+				}
+				player.setMedallas(player.getDerrotados().size());//Arraylist = size | Lista[] = lenght
 				// Vemos que pokemons estan guardados
 				while (lectorRegistro.hasNextLine()) {
 					String lineaPokemon = lectorRegistro.nextLine();
@@ -354,14 +360,16 @@ public class App {
 				System.out.println("PC:");
 				for (Pokemon p : player.getPc()) {// Printeamos el pc sin resetear el contador
 					cont += 1;
-					System.out.println(
-							cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
+					System.out.println(cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
 				}
 				System.out.println("1) Cambiar Pokemon.");
 				System.out.println("2) Salir.");
 				System.out.print("> ");
 				opcion = Integer.parseInt(sc.nextLine());
-				if (opcion == 1) {
+				if (opcion == 2) {
+					System.out.println("Se desconectó del PC...");
+				}
+				else if (opcion == 1) {
 					if (player.getPc().isEmpty()) {
 						System.out.println("\nNo tienes Pokemon en el PC para intercambiar.");
 						break;
@@ -510,6 +518,8 @@ public class App {
 										System.out.println("\n¡Has derrotado a todos los Pokemon de " + gymElegido.getLider() + "!");
 										player.setMedallas(player.getMedallas() + 1);
 										gymElegido.setEstado("Derrotado");
+										lideresGym.get(opcionGym).setEstado("Derrotado");
+										player.getDerrotados().add(gymElegido.getLider());
 										batalla = false;
 									}
 									
@@ -601,7 +611,10 @@ public class App {
 			FileWriter fw = new FileWriter(arch, false);
 			BufferedWriter writer = new BufferedWriter(fw);
 			// Escribimos el jugador y sus medallas en el txt
-			writer.write(player.getNombre() + ";" + player.getMedallas());
+			writer.write(player.getNombre());
+			for(String s : player.getDerrotados()) {//Me printea mi lista con los lideres de gimnasio derrotados
+				writer.write(";" + s);
+			}
 			writer.newLine();// Salto de linea
 			// Escribimos los Pokemons del equipo
 			for (Pokemon p : player.getEquipo()) {
