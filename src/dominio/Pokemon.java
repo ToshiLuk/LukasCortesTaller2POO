@@ -68,4 +68,5 @@ public class Pokemon {
 	public int getStats() {
 		return vida + ataque + defensa + ataqueEspecial + defensaEspecial + velocidad;
 	}
+	
 }
