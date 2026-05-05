@@ -1,5 +1,6 @@
 package logica;
 
+//Lukas Paolo Toshisuke Cortés Alfaro, 22.108.123-4, ICCI
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+import dominio.AltoMando;
+import dominio.Gimnasio;
 import dominio.Jugador;
 import dominio.Pokemon;
 
@@ -16,12 +19,15 @@ public class App {
 	public static Scanner sc = new Scanner(System.in);
 	public static Scanner lector;
 	public static ArrayList<Pokemon> pokedexGlobal = new ArrayList<>();
-	
+	public static ArrayList<Gimnasio> lideresGym = new ArrayList<>();
+	public static ArrayList<AltoMando> altoMando = new ArrayList<>();
+
 	public static void main(String[] args) throws FileNotFoundException {
 		int opcion = 0;
 		boolean opcionValida = false; // Controla el bucle
 		leerPokedex();
 		leerGymLeaders();
+		leerAltoMando();
 		do {
 			do {
 				System.out.println("1) Continuar.");
@@ -66,8 +72,40 @@ public class App {
 		} while (opcion != 3);
 	}
 
-	private static void leerGymLeaders() {
-		
+	private static void leerAltoMando() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private static void leerGymLeaders() throws FileNotFoundException {
+		try {
+			File arch = new File("datos/Gimnasios.txt");
+			lector = new Scanner(arch);
+			while (lector.hasNextLine()) {
+				String linea = lector.nextLine();
+				String partes[] = linea.split(";");
+				// Sacamos las cositas del lider
+				int numero = Integer.parseInt(partes[0]);
+				String lider = partes[1].strip();
+				String estado = partes[2].strip();
+				int tamañoEquipo = Integer.parseInt(partes[3]);
+				// Creamos el gimnasio pero sin equipo
+				Gimnasio gym = new Gimnasio(numero, lider, estado);
+				// Ahora vamos a guardar su equipo
+				for (int i = 0; i < tamañoEquipo; i++) {
+					String nombrePokemon = partes[4 + i].trim();
+					// Clonamos pokemon de la pokedex
+					Pokemon poke = clonarPokemonPokedex(nombrePokemon);
+
+					if (poke != null) {
+						gym.getEquipo().add(poke); // Y se agrega el pokemon clonado al equipo del lider de gym
+					}
+				}
+				lideresGym.add(gym);
+			}
+		} catch (Exception e) {
+			System.out.println("Error al intentar leer el archivo Gimnasios.txt");
+		}
 	}
 
 	private static void leerPokedex() throws FileNotFoundException {
@@ -184,9 +222,10 @@ public class App {
 				System.out.println("\nEquipo Actual:");
 				for (Pokemon p : player.getEquipo()) {// Recorremos el equipo
 					cont += 1;
-					System.out.println(cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());// Printeamos
-																															// cada
-																															// equipo
+					System.out.println(
+							cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());// Printeamos
+																													// cada
+																													// equipo
 				}
 				break;
 			case 2:
@@ -278,54 +317,54 @@ public class App {
 				}
 				break;
 			case 3:
-					cont = 0;
-					opcion = 0;
-					System.out.println("\n=== Acceso al PC ===");
-					System.out.println("Equipo:");
-					for (Pokemon p : player.getEquipo()) {// Printeamos equipo
-						cont += 1;
-						System.out.println(
-								cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
+				cont = 0;
+				opcion = 0;
+				System.out.println("\n=== Acceso al PC ===");
+				System.out.println("Equipo:");
+				for (Pokemon p : player.getEquipo()) {// Printeamos equipo
+					cont += 1;
+					System.out.println(
+							cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
+				}
+				System.out.println("PC:");
+				for (Pokemon p : player.getPc()) {// Printeamos el pc sin resetear el contador
+					cont += 1;
+					System.out.println(
+							cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
+				}
+				System.out.println("1) Cambiar Pokemon.");
+				System.out.println("2) Salir.");
+				System.out.print("> ");
+				opcion = Integer.parseInt(sc.nextLine());
+				if (opcion == 1) {
+					if (player.getPc().isEmpty()) {
+						System.out.println("\nNo tienes Pokemon en el PC para intercambiar.");
+						break;
 					}
-					System.out.println("PC:");
-					for (Pokemon p : player.getPc()) {// Printeamos el pc sin resetear el contador
-						cont += 1;
-						System.out.println(
-								cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
-					}
-					System.out.println("1) Cambiar Pokemon.");
-					System.out.println("2) Salir.");
+					System.out.println("¿Que Pokemon de su equipo va a cambiar?(Ingrese su indice)");
 					System.out.print("> ");
-					opcion = Integer.parseInt(sc.nextLine());
-					if (opcion == 1) {
-						if (player.getPc().isEmpty()) {
-							System.out.println("\nNo tienes Pokemon en el PC para intercambiar.");
-							break;
-						}
-						System.out.println("¿Que Pokemon de su equipo va a cambiar?(Ingrese su indice)");
-						System.out.print("> ");
-						int opcionEquipo = Integer.parseInt(sc.nextLine());
-						System.out.println("¿Que Pokemon del PC quiere traer a su equipo?(Ingrese el indice)");
-						System.out.print(">");
-						int opcionPC = Integer.parseInt(sc.nextLine());
-						int indiceEquipo = opcionEquipo - 1;
-						int indicePC = opcionPC - 1 - player.getEquipo().size();
-						if (indiceEquipo >= 0 && indiceEquipo < player.getEquipo().size() && indicePC >= 0
-								&& indicePC< player.getPc().size()) {
-							// Guardamos ambos pokemon
-							Pokemon auxE = player.getEquipo().get(indiceEquipo);
-							Pokemon auxPC = player.getPc().get(indicePC);
-							// .set para cambiar los arraylist
-							player.getEquipo().set(indiceEquipo, auxPC);
-							player.getPc().set(indicePC, auxE);
+					int opcionEquipo = Integer.parseInt(sc.nextLine());
+					System.out.println("¿Que Pokemon del PC quiere traer a su equipo?(Ingrese el indice)");
+					System.out.print(">");
+					int opcionPC = Integer.parseInt(sc.nextLine());
+					int indiceEquipo = opcionEquipo - 1;
+					int indicePC = opcionPC - 1 - player.getEquipo().size();
+					if (indiceEquipo >= 0 && indiceEquipo < player.getEquipo().size() && indicePC >= 0
+							&& indicePC < player.getPc().size()) {
+						// Guardamos ambos pokemon
+						Pokemon auxE = player.getEquipo().get(indiceEquipo);
+						Pokemon auxPC = player.getPc().get(indicePC);
+						// .set para cambiar los arraylist
+						player.getEquipo().set(indiceEquipo, auxPC);
+						player.getPc().set(indicePC, auxE);
 
-							System.out.println("\n¡Intercambio exitoso!");
-							System.out.println(auxPC.getNombre() + " ahora está en tu equipo.");
-						} else {
-							System.out.println("\nError: Numeros ingresados fuera de rango.");
-						}
+						System.out.println("\n¡Intercambio exitoso!");
+						System.out.println(auxPC.getNombre() + " ahora está en tu equipo.");
+					} else {
+						System.out.println("\nError: Numeros ingresados fuera de rango.");
 					}
-				
+				}
+
 				break;
 			case 4:
 				break;
@@ -339,34 +378,35 @@ public class App {
 			case 8:
 				guardarPartida(player);
 				System.out.println("Nos vemos entrenador...");
-				System.exit(0);//Para matar el menu
+				System.exit(0);// Para matar el menu
 			}
 		} while (opcion != 8);
 	}
 
 	private static void guardarPartida(Jugador player) {
 		try {
-			//Archivo
+			// Archivo
 			File arch = new File("datos/Registros.txt");
-			//El FileWriter abre el txt y el false hace que sobrescriba en vez de añadir texto
+			// El FileWriter abre el txt y el false hace que sobrescriba en vez de añadir
+			// texto
 			FileWriter fw = new FileWriter(arch, false);
 			BufferedWriter writer = new BufferedWriter(fw);
-			//Escribimos el jugador y sus medallas en el txt
+			// Escribimos el jugador y sus medallas en el txt
 			writer.write(player.getNombre() + ";" + player.getMedallas());
-			writer.newLine();//Salto de linea
-			//Escribimos los Pokemons del equipo
-			for(Pokemon p : player.getEquipo()) {
+			writer.newLine();// Salto de linea
+			// Escribimos los Pokemons del equipo
+			for (Pokemon p : player.getEquipo()) {
 				writer.write(p.getNombre() + ";" + p.getEstado());
 				writer.newLine();
 			}
-			//Escribimos los Pokemons del PC
-			for(Pokemon p : player.getPc()) {
+			// Escribimos los Pokemons del PC
+			for (Pokemon p : player.getPc()) {
 				writer.write(p.getNombre() + ";" + p.getEstado());
 				writer.newLine();
 			}
 			writer.close();
 			System.out.println("\nPartida guardada con exito!");
-		}catch(IOException e) {
+		} catch (IOException e) {
 			System.out.println("Error: Hubo un problema de escritura al intentar guardar la partida.");
 		}
 	}

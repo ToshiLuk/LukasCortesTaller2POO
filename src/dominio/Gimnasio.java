@@ -7,7 +7,7 @@ public class Gimnasio {
 	private String lider; //Nombre de lider
 	private String estado; //Derrotado: True? False?
 	private ArrayList<Pokemon> equipo; //Equipo del lider de gimnasio
-	public Gimnasio(int numero, String lider, String estado, ArrayList<Pokemon> equipo) {
+	public Gimnasio(int numero, String lider, String estado) {
 		this.numero = numero;
 		this.lider = lider;
 		this.estado = estado;
