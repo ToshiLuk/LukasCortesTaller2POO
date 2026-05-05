@@ -159,7 +159,7 @@ public class App {
 	}
 
 	private static Jugador cargarPartida() {
-		File arch = new File("datos/Registrox.txt");
+		File arch = new File("datos/Registros.txt");
 		if (!arch.exists() || arch.length() == 0) {
 			return null;
 		}
@@ -567,6 +567,10 @@ public class App {
 			case 5:
 				break;
 			case 6:
+				for(Pokemon p : player.getEquipo()) {
+					p.setEstado("Vivo");
+				}
+				System.out.println("Tu equipo se ha recuperado!");
 				break;
 			case 7:
 				guardarPartida(player);
