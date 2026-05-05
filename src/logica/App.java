@@ -1,12 +1,12 @@
 package logica;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
+import java.util.Random;
 import java.util.Scanner;
 
 import dominio.Jugador;
@@ -344,8 +344,8 @@ public class App {
 			//Archivo
 			File arch = new File("datos/Registros.txt");
 			//El FileWriter abre el txt y el false hace que sobrescriba en vez de añadir texto
-			java.io.FileWriter fw = new java.io.FileWriter(arch, false);
-			java.io.BufferedWriter writer = new java.io.BufferedWriter(fw);
+			FileWriter fw = new FileWriter(arch, false);
+			BufferedWriter writer = new BufferedWriter(fw);
 			//Escribimos el jugador y sus medallas en el txt
 			writer.write(player.getNombre() + ";" + player.getMedallas());
 			writer.newLine();//Salto de linea
@@ -361,7 +361,7 @@ public class App {
 			}
 			writer.close();
 			System.out.println("\nPartida guardada con exito!");
-		}catch(java.io.IOException e) {
+		}catch(IOException e) {
 			System.out.println("Error: Hubo un problema de escritura al intentar guardar la partida.");
 		}
 	}
@@ -374,7 +374,7 @@ public class App {
 				posiblesEncuentros.add(p);
 			}
 		}
-		java.util.Random random = new java.util.Random();
+		Random random = new Random();
 		double roll = random.nextDouble();// Un decimal aleatorio para buscar el pokemon
 
 		double probTotal = 0.0;
