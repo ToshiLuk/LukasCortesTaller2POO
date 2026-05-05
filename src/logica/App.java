@@ -16,11 +16,12 @@ public class App {
 	public static Scanner sc = new Scanner(System.in);
 	public static Scanner lector;
 	public static ArrayList<Pokemon> pokedexGlobal = new ArrayList<>();
-
+	
 	public static void main(String[] args) throws FileNotFoundException {
 		int opcion = 0;
 		boolean opcionValida = false; // Controla el bucle
 		leerPokedex();
+		leerGymLeaders();
 		do {
 			do {
 				System.out.println("1) Continuar.");
@@ -63,6 +64,10 @@ public class App {
 				break;
 			}
 		} while (opcion != 3);
+	}
+
+	private static void leerGymLeaders() {
+		
 	}
 
 	private static void leerPokedex() throws FileNotFoundException {
