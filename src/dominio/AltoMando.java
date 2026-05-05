@@ -6,7 +6,7 @@ public class AltoMando {
 	private int numero;
 	private String nombre;
 	private ArrayList<Pokemon> equipo;
-	public AltoMando(int numero, String nombre, ArrayList<Pokemon> equipo) {
+	public AltoMando(int numero, String nombre) {
 		this.numero = numero;
 		this.nombre = nombre;
 		this.equipo = new ArrayList<>();//El autocompletar pone que es una lista de Pokemon pero no es necesario que este pq el eclipse le sabe

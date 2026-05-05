@@ -20,7 +20,7 @@ public class App {
 	public static Scanner lector;
 	public static ArrayList<Pokemon> pokedexGlobal = new ArrayList<>();
 	public static ArrayList<Gimnasio> lideresGym = new ArrayList<>();
-	public static ArrayList<AltoMando> altoMando = new ArrayList<>();
+	public static ArrayList<AltoMando> altoMandoMiembros = new ArrayList<>();
 
 	public static void main(String[] args) throws FileNotFoundException {
 		int opcion = 0;
@@ -73,17 +73,40 @@ public class App {
 	}
 
 	private static void leerAltoMando() {
-		// TODO Auto-generated method stub
-
+		try {
+			File arch = new File("datos/Alto Mando.txt");
+			lector = new Scanner(arch);
+			while (lector.hasNextLine()) {
+				String linea = lector.nextLine();
+				String[] partes = linea.split(";");
+				//Info de miembro de alto mando
+				int numero = Integer.parseInt(partes[0]);
+				String nombre = partes[1].strip();
+				//Como todos tiene 6 pokemon no hay cantidad
+				AltoMando altoMando = new AltoMando(numero, nombre);//Creamos miembro del alto mando
+				//Guardamos el equipo
+				for(int i = 0; i < 6; i++) {
+					String nombrePokemon = partes[i+1].strip();
+					Pokemon poke = clonarPokemonPokedex(nombrePokemon);//Clonamos pokemon
+					
+					if(poke!=null) {
+						altoMando.getEquipo().add(poke);
+					}
+				}
+				altoMandoMiembros.add(altoMando);
+			}
+		}catch(Exception e) {
+			System.out.println("Error al intentar leer el archivo Alto Mando.txt");
+		}
 	}
 
-	private static void leerGymLeaders() throws FileNotFoundException {
+	private static void leerGymLeaders() {
 		try {
 			File arch = new File("datos/Gimnasios.txt");
 			lector = new Scanner(arch);
 			while (lector.hasNextLine()) {
 				String linea = lector.nextLine();
-				String partes[] = linea.split(";");
+				String partes[] = linea.split(";");//No sabia que esto tmb funciona asi lol
 				// Sacamos las cositas del lider
 				int numero = Integer.parseInt(partes[0]);
 				String lider = partes[1].strip();
