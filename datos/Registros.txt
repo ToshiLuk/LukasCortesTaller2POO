@@ -1,4 +1,4 @@
-Dogchow;3
+Dogchow;EmmaLaArdillaRabiosa;MartinNegro
 Poliwrath;Vivo
 Scizor;Vivo
 Noivern;Vivo
