@@ -17,21 +17,19 @@ import dominio.Pokemon;
 import dominio.TablaTipos;
 
 public class App {
-	public static Scanner sc = new Scanner(System.in);
-	public static Scanner lector;
-	public static ArrayList<Pokemon> pokedexGlobal = new ArrayList<>();
-	public static ArrayList<Gimnasio> lideresGym = new ArrayList<>();
-	public static ArrayList<AltoMando> altoMandoMiembros = new ArrayList<>();
+	public static Scanner sc = new Scanner(System.in);//Para toda entrada por consola/teclado
+	public static Scanner lector;//Para toda entrada de .txt
+	public static ArrayList<Pokemon> pokedexGlobal = new ArrayList<>();//En donde se guardan los objetos Pokemon de Pokedex.txt
+	public static ArrayList<Gimnasio> lideresGym = new ArrayList<>();//En donde se guardan los objetos Gimnasio de Gimasios.txt
+	public static ArrayList<AltoMando> altoMandoMiembros = new ArrayList<>();//En donde se guardan los objetos AltoMando de Alto Mando.txt
 	public static String[] tipos = { "Normal", "Fuego", "Agua", "Planta", "Electrico", "Hielo", "Lucha", "Veneno",
-			"Tierra", "Volador", "Psiquico", "Bicho", "Roca", "Fantasma", "Dragon", "Acero", "Siniestro", "Hada" };
-
+			"Tierra", "Volador", "Psiquico", "Bicho", "Roca", "Fantasma", "Dragon", "Acero", "Siniestro", "Hada" };//Lista con todos los tipos ordenados segun la clase de TablaTipos para conseguir indice
 	public static void main(String[] args) throws FileNotFoundException {
-		int opcion = 0;
+		int opcion = 0;//Opcion para menus
 		boolean opcionValida = false; // Controla el bucle
-		leerPokedex();
-		leerGymLeaders();
-		leerAltoMando();
-
+		leerPokedex();//Se lee crea y guarda los pokemon en una ArrayList
+		leerGymLeaders();//Se lee crea y guarda los gimnasios en una ArrayList
+		leerAltoMando();//Se lee crea y guarda el AltoMando en una ArrayList
 		do {
 			do {
 				System.out.println("1) Continuar.");
@@ -47,37 +45,36 @@ public class App {
 						System.out.println("Error: El número debe ser 1, 2 o 3.\n");
 					}
 				} catch (NumberFormatException e) {
-					// Atrapa si pone letras como "a", "hola", etc.
+					// Atrapa si se pone letras como "a", "hola", etc.
 					System.out.println("Error: Ingresó una letra o carácter inválido. Debe ser un número.\n");
 				}
 			} while (!opcionValida);
 			switch (opcion) {
 			case 1:
-				Jugador jugadorGuardado = cargarPartida();
-				if (jugadorGuardado != null) {
+				Jugador jugadorGuardado = cargarPartida();//Cargar partida nos toma lo que se guardó en Registros.txt y crea un objeto Jugador con los datos
+				if (jugadorGuardado != null) {//Si se creo un objeto Jugador nos llama al menu con este objeto
 					System.out.println("\n¡Bienvenido de vuelta, " + jugadorGuardado.getNombre() + "!");
-					menuDeJuego(jugadorGuardado);
+					menuDeJuego(jugadorGuardado);//El menu del juego
 				} else {
-					System.out.println("\nNo se encontró ninguna partida guardada o el archivo está vacío.");
+					System.out.println("\nNo se encontró ninguna partida guardada o el archivo está vacío.");//Cuando el objeto jugador se crea con un Registros.txt vacio
 				}
 				break;
 			case 2:
 				System.out.print("Ingrese su Apodo: ");
 				String nombre = sc.nextLine();
 				Jugador player = new Jugador(nombre);
-				// Algo para crear al jugador como objeto y asi
-				menuDeJuego(player);
+				//Se crea el jugador
+				menuDeJuego(player);//Y se entra al menu
 				break;
 			case 3:
-				System.out.println("Hasta luego entrenador...");
+				System.out.println("Hasta luego entrenador...");//Salida de programa
 				break;
 			default:
 				break;
 			}
 		} while (opcion != 3);
 	}
-
-	private static void leerAltoMando() {
+	private static void leerAltoMando() {//Guardamos en objetos y en un ArrayList al alto mando que esta en Alto Mando.txt
 		try {
 			File arch = new File("datos/Alto Mando.txt");
 			lector = new Scanner(arch);
@@ -87,25 +84,24 @@ public class App {
 				// Info de miembro de alto mando
 				int numero = Integer.parseInt(partes[0]);
 				String nombre = partes[1].strip();
-				// Como todos tiene 6 pokemon no hay cantidad
+				// Como todos tienen 6 pokemon no tenemos que guardar cantidad de pokemon como con los gimnasios
 				AltoMando altoMando = new AltoMando(numero, nombre);// Creamos miembro del alto mando
 				// Guardamos el equipo
 				for (int i = 0; i < 6; i++) {
-					String nombrePokemon = partes[i + 1].strip();
-					Pokemon poke = clonarPokemonPokedex(nombrePokemon);// Clonamos pokemon
-
-					if (poke != null) {
+					String nombrePokemon = partes[i + 1].strip();//Guardamos el nombre
+					Pokemon poke = clonarPokemonPokedex(nombrePokemon);// Clonamos pokemon desde la Arraylist con los pokemon
+					if (poke != null) {//Si existe el pokemon, se agrega a su equipo
 						altoMando.getEquipo().add(poke);
 					}
 				}
-				altoMandoMiembros.add(altoMando);
+				altoMandoMiembros.add(altoMando);//Y finalmente se agrega a una lista con todos los del alto mando
 			}
-		} catch (Exception e) {
+		} catch (Exception e) {//Si el txt no se puede leer
 			System.out.println("Error al intentar leer el archivo Alto Mando.txt");
 		}
 	}
 
-	private static void leerGymLeaders() {
+	private static void leerGymLeaders() {//Guardamos en objetos y en un ArrayList al alto mando que esta en Gimnasios.txt
 		try {
 			File arch = new File("datos/Gimnasios.txt");
 			lector = new Scanner(arch);
@@ -129,19 +125,20 @@ public class App {
 						gym.getEquipo().add(poke); // Y se agrega el pokemon clonado al equipo del lider de gym
 					}
 				}
-				lideresGym.add(gym);
+				lideresGym.add(gym);//Y se agrega a la Arraylist con todos los gimnasios
 			}
 		} catch (Exception e) {
 			System.out.println("Error al intentar leer el archivo Gimnasios.txt");
 		}
 	}
 
-	private static void leerPokedex() throws FileNotFoundException {
+	private static void leerPokedex() throws FileNotFoundException {//Se lee crea y guardan los pokemon
 		File arch = new File("datos/Pokedex.txt");
 		lector = new Scanner(arch);
 		while (lector.hasNextLine()) {
 			String linea = lector.nextLine();
 			String[] partes = linea.split(";");
+			//Informacion de los pokemon
 			String nombre = partes[0].strip();
 			String habitat = partes[1].strip();
 			double porcentajeAparicion = Double.parseDouble(partes[2].strip());
@@ -152,10 +149,10 @@ public class App {
 			int defensaEspecial = Integer.parseInt(partes[7].strip());
 			int velocidad = Integer.parseInt(partes[8].strip());
 			String tipo = partes[9].strip();
-			// Ya guardado toda la info ahora creamos el
+			// Ya guardado toda la info ahora creamos el objeto con los atributos
 			Pokemon nuevoPokemon = new Pokemon(nombre, habitat, porcentajeAparicion, vida, ataque, defensa,
 					ataqueEspecial, defensaEspecial, velocidad, tipo);
-			pokedexGlobal.add(nuevoPokemon);
+			pokedexGlobal.add(nuevoPokemon);//Se agrega el pokemon a la pokedex que es un Arraylist
 		}
 	}
 
