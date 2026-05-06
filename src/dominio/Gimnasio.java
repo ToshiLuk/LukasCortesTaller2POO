@@ -16,14 +16,8 @@ public class Gimnasio {
 	public int getNumero() {
 		return numero;
 	}
-	public void setNumero(int numero) {
-		this.numero = numero;
-	}
 	public String getLider() {
 		return lider;
-	}
-	public void setLider(String lider) {
-		this.lider = lider;
 	}
 	public String getEstado() {
 		return estado;
