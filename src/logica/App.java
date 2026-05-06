@@ -100,7 +100,6 @@ public class App {
 			System.out.println("Error al intentar leer el archivo Alto Mando.txt");
 		}
 	}
-
 	private static void leerGymLeaders() {//Guardamos en objetos y en un ArrayList al alto mando que esta en Gimnasios.txt
 		try {
 			File arch = new File("datos/Gimnasios.txt");
@@ -131,7 +130,6 @@ public class App {
 			System.out.println("Error al intentar leer el archivo Gimnasios.txt");
 		}
 	}
-
 	private static void leerPokedex() throws FileNotFoundException {//Se lee crea y guardan los pokemon
 		File arch = new File("datos/Pokedex.txt");
 		lector = new Scanner(arch);
@@ -158,7 +156,7 @@ public class App {
 
 	private static Jugador cargarPartida() {
 		File arch = new File("datos/Registros.txt");
-		if (!arch.exists() || arch.length() == 0) {
+		if (!arch.exists() || arch.length() == 0) {//Se comprueba si es que Registros.txt existe o si tiene texto
 			return null;
 		}
 		try {
@@ -167,15 +165,15 @@ public class App {
 				// leer datos
 				String linea = lectorRegistro.nextLine();
 				String[] partes = linea.split(";");
-
+				//Se crea un jugador con el nombre en Registros.txt
 				Jugador player = new Jugador(partes[0]);
 
-				for (int i = 1; i < partes.length; i++) {
-					player.getDerrotados().add(partes[i]);
-					if(partes[partes.length-1] == "Alto Mando") {
+				for (int i = 1; i < partes.length; i++) {//Se guarda los gimnasios derrotados y alto mando derrotado
+					player.getDerrotados().add(partes[i]);//Se agregan a una lista para luego contarlos para conseguir las medallas como un int
+					if(partes[partes.length-1] == "Alto Mando") {//Para cuando llegue a leer el alto mando derrotado no llegue a leer lo de abajo y me de un error de index out of bounds
 						break;
 					}
-					if (lideresGym.get(i - 1).getLider().equals(player.getDerrotados().get(i - 1))) {
+					if (lideresGym.get(i - 1).getLider().equals(player.getDerrotados().get(i - 1))) {//Cambiamos el estado de los gimnasios segun si estan en Registros.txt
 						lideresGym.get(i - 1).setEstado("Derrotado");
 					}
 				}
@@ -183,27 +181,26 @@ public class App {
 				// Vemos que pokemons estan guardados
 				while (lectorRegistro.hasNextLine()) {
 					String lineaPokemon = lectorRegistro.nextLine();
-					if (lineaPokemon.trim().isEmpty())
-						continue;
+					if (lineaPokemon.trim().isEmpty()) continue;//Si al leer no hay pokemons se sale del while
 					String[] partesPokemon = lineaPokemon.split(";");
 					String nombrePokemon = partesPokemon[0];
 					String estadoPokemon = partesPokemon[1];
+					//Info del pokemon
+					Pokemon poke = clonarPokemonPokedex(nombrePokemon);//Clonamos el pokemon buscando su nombre en la pokedex
 
-					Pokemon poke = clonarPokemonPokedex(nombrePokemon);
-
-					if (poke != null) {
-						poke.setEstado(estadoPokemon);
-						if (player.getEquipo().size() < 6) {
+					if (poke != null) {//Si pokemon existe
+						poke.setEstado(estadoPokemon);//Se le pone el estado con el que quedó guardado
+						if (player.getEquipo().size() < 6) {//Añadimos los primeros 6 pokemons al equipo
 							player.getEquipo().add(poke);
 						} else {
-							player.getPc().add(poke);
+							player.getPc().add(poke);//Y si ya se agregaron 6 agregamos el resto a la lista pc
 						}
 					}
 				}
-				lectorRegistro.close();
-				return player; // Retornamos jugador armado
+				lectorRegistro.close();//Se cierra el lector
+				return player; // Retornamos objeto jugador armado
 			}
-			lectorRegistro.close();
+			lectorRegistro.close();//Se cierra el lector
 		} catch (Exception e) {
 			System.out.println("Error al intentar leer el archivo Registros.txt");
 		}
@@ -211,8 +208,8 @@ public class App {
 	}
 
 	private static Pokemon clonarPokemonPokedex(String nombrePokemon) {
-		for (Pokemon p : pokedexGlobal) {
-			if (p.getNombre().equalsIgnoreCase(nombrePokemon)) {
+		for (Pokemon p : pokedexGlobal) {//Buscamos los pokemons en la pokedex 
+			if (p.getNombre().equalsIgnoreCase(nombrePokemon)) {//Si el nombre del pokemon de la pokedex es igual al que se buscó, se crea un objeto pokemon con los atributos guardados en la pokedex
 				// Creamos el pokemon
 				return new Pokemon(p.getNombre(), p.getHabitat(), p.getPorcentajeAparicion(), p.getVida(),
 						p.getAtaque(), p.getDefensa(), p.getAtaqueEspecial(), p.getDefensaEspecial(), p.getVelocidad(),
@@ -221,7 +218,6 @@ public class App {
 		}
 		return null;// Si el pokemon no existe en la pokedex
 	}
-
 	private static void menuDeJuego(Jugador player) {
 		int opcion = 0;
 		boolean opcionValida = false;
