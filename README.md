@@ -18,6 +18,7 @@ El código fuente está dividido en dos paquetes principales:
 * `dominio/`: Contiene las clases que modelan las entidades del juego (`Jugador`, `Pokemon`, `Gimnasio`, `AltoMando` y `TablaTipos`).
 * `logica/`: Contiene la clase `App.java` que maneja el ciclo de vida de la aplicación, los menús de usuario y la carga de archivos.
 
+## Integrante
 | Nombre Completo | RUT | Usuario GitHub |
 | :--- | :--- | :--- |
 | Lukas Paolo Toshisuke Cortes Alfaro | 22.108.123-4 | [@ToshiLuk](https://github.com/ToshiLuk) |
