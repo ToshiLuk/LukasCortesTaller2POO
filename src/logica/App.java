@@ -212,12 +212,14 @@ public class App {
 					System.out.println(
 							cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
 				}
+				System.out.println("=======================");
 				System.out.println("PC:");
 				for (Pokemon p : player.getPc()) {// Printeamos el pc sin resetear el contador
 					cont += 1;
 					System.out.println(
 							cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
 				}
+				System.out.println("=======================");
 				System.out.println("1) Cambiar Pokemon.");
 				System.out.println("2) Salir.");
 				System.out.print("> ");
@@ -225,20 +227,19 @@ public class App {
 				if (opcion == 2) {
 					System.out.println("Se desconectó del PC...");
 				} else if (opcion == 1) {
-					if (player.getPc().isEmpty()) {
-						System.out.println("\nNo tienes Pokemon en el PC para intercambiar.");
+					if (player.getPc().isEmpty() && player.getEquipo().isEmpty()) {
+						System.out.println("\nNo tienes Pokemons para intercambiar.");
 						break;
 					}
-					System.out.println("¿Que Pokemon de su equipo va a cambiar?(Ingrese su indice)");
+					System.out.println("¿Que Pokemon va a cambiar?(Ingrese su indice)");
 					System.out.print("> ");
-					int opcionEquipo = Integer.parseInt(sc.nextLine());
-					System.out.println("¿Que Pokemon del PC quiere traer a su equipo?(Ingrese el indice)");
+					int opcionPr = Integer.parseInt(sc.nextLine());
+					System.out.println("¿Cual es el segundo Pokemon?(Ingrese el indice)");
 					System.out.print(">");
-					int opcionPC = Integer.parseInt(sc.nextLine());
-					int indiceEquipo = opcionEquipo - 1;
-					int indicePC = opcionPC - 1 - player.getEquipo().size();
-					if (indiceEquipo >= 0 && indiceEquipo < player.getEquipo().size() && indicePC >= 0
-							&& indicePC < player.getPc().size()) {
+					int opcionSe = Integer.parseInt(sc.nextLine());
+					int indicePr = opcionPr - 1;
+					int indiceSe = opcionSe - 1 - player.getEquipo().size();
+					if ((indicePr <7 && indicePr >-1) || (indicePr>6)) {//SIGO CAMBIANDO
 						// Guardamos ambos pokemon
 						Pokemon auxE = player.getEquipo().get(indiceEquipo);
 						Pokemon auxPC = player.getPc().get(indicePC);
