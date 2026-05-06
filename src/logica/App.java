@@ -74,150 +74,6 @@ public class App {
 			}
 		} while (opcion != 3);
 	}
-	private static void leerAltoMando() {//Guardamos en objetos y en un ArrayList al alto mando que esta en Alto Mando.txt
-		try {
-			File arch = new File("datos/Alto Mando.txt");
-			lector = new Scanner(arch);
-			while (lector.hasNextLine()) {
-				String linea = lector.nextLine();
-				String[] partes = linea.split(";");
-				// Info de miembro de alto mando
-				int numero = Integer.parseInt(partes[0]);
-				String nombre = partes[1].strip();
-				// Como todos tienen 6 pokemon no tenemos que guardar cantidad de pokemon como con los gimnasios
-				AltoMando altoMando = new AltoMando(numero, nombre);// Creamos miembro del alto mando
-				// Guardamos el equipo
-				for (int i = 0; i < 6; i++) {
-					String nombrePokemon = partes[i + 1].strip();//Guardamos el nombre
-					Pokemon poke = clonarPokemonPokedex(nombrePokemon);// Clonamos pokemon desde la Arraylist con los pokemon
-					if (poke != null) {//Si existe el pokemon, se agrega a su equipo
-						altoMando.getEquipo().add(poke);
-					}
-				}
-				altoMandoMiembros.add(altoMando);//Y finalmente se agrega a una lista con todos los del alto mando
-			}
-		} catch (Exception e) {//Si el txt no se puede leer
-			System.out.println("Error al intentar leer el archivo Alto Mando.txt");
-		}
-	}
-	private static void leerGymLeaders() {//Guardamos en objetos y en un ArrayList al alto mando que esta en Gimnasios.txt
-		try {
-			File arch = new File("datos/Gimnasios.txt");
-			lector = new Scanner(arch);
-			while (lector.hasNextLine()) {
-				String linea = lector.nextLine();
-				String partes[] = linea.split(";");// No sabia que esto tmb funciona asi lol
-				// Sacamos las cositas del lider
-				int numero = Integer.parseInt(partes[0]);
-				String lider = partes[1].strip();
-				String estado = partes[2].strip();
-				int tamañoEquipo = Integer.parseInt(partes[3]);
-				// Creamos el gimnasio pero sin equipo
-				Gimnasio gym = new Gimnasio(numero, lider, estado);
-				// Ahora vamos a guardar su equipo
-				for (int i = 0; i < tamañoEquipo; i++) {
-					String nombrePokemon = partes[4 + i].trim();
-					// Clonamos pokemon de la pokedex
-					Pokemon poke = clonarPokemonPokedex(nombrePokemon);
-
-					if (poke != null) {
-						gym.getEquipo().add(poke); // Y se agrega el pokemon clonado al equipo del lider de gym
-					}
-				}
-				lideresGym.add(gym);//Y se agrega a la Arraylist con todos los gimnasios
-			}
-		} catch (Exception e) {
-			System.out.println("Error al intentar leer el archivo Gimnasios.txt");
-		}
-	}
-	private static void leerPokedex() throws FileNotFoundException {//Se lee crea y guardan los pokemon
-		File arch = new File("datos/Pokedex.txt");
-		lector = new Scanner(arch);
-		while (lector.hasNextLine()) {
-			String linea = lector.nextLine();
-			String[] partes = linea.split(";");
-			//Informacion de los pokemon
-			String nombre = partes[0].strip();
-			String habitat = partes[1].strip();
-			double porcentajeAparicion = Double.parseDouble(partes[2].strip());
-			int vida = Integer.parseInt(partes[3].strip());
-			int ataque = Integer.parseInt(partes[4].strip());
-			int defensa = Integer.parseInt(partes[5].strip());
-			int ataqueEspecial = Integer.parseInt(partes[6].strip());
-			int defensaEspecial = Integer.parseInt(partes[7].strip());
-			int velocidad = Integer.parseInt(partes[8].strip());
-			String tipo = partes[9].strip();
-			// Ya guardado toda la info ahora creamos el objeto con los atributos
-			Pokemon nuevoPokemon = new Pokemon(nombre, habitat, porcentajeAparicion, vida, ataque, defensa,
-					ataqueEspecial, defensaEspecial, velocidad, tipo);
-			pokedexGlobal.add(nuevoPokemon);//Se agrega el pokemon a la pokedex que es un Arraylist
-		}
-	}
-
-	private static Jugador cargarPartida() {
-		File arch = new File("datos/Registros.txt");
-		if (!arch.exists() || arch.length() == 0) {//Se comprueba si es que Registros.txt existe o si tiene texto
-			return null;
-		}
-		try {
-			Scanner lectorRegistro = new Scanner(arch);
-			if (lectorRegistro.hasNextLine()) {
-				// leer datos
-				String linea = lectorRegistro.nextLine();
-				String[] partes = linea.split(";");
-				//Se crea un jugador con el nombre en Registros.txt
-				Jugador player = new Jugador(partes[0]);
-
-				for (int i = 1; i < partes.length; i++) {//Se guarda los gimnasios derrotados y alto mando derrotado
-					player.getDerrotados().add(partes[i]);//Se agregan a una lista para luego contarlos para conseguir las medallas como un int
-					if(partes[partes.length-1] == "Alto Mando") {//Para cuando llegue a leer el alto mando derrotado no llegue a leer lo de abajo y me de un error de index out of bounds
-						break;
-					}
-					if (lideresGym.get(i - 1).getLider().equals(player.getDerrotados().get(i - 1))) {//Cambiamos el estado de los gimnasios segun si estan en Registros.txt
-						lideresGym.get(i - 1).setEstado("Derrotado");
-					}
-				}
-				player.setMedallas(player.getDerrotados().size());// Arraylist = size | Lista[] = lenght
-				// Vemos que pokemons estan guardados
-				while (lectorRegistro.hasNextLine()) {
-					String lineaPokemon = lectorRegistro.nextLine();
-					if (lineaPokemon.trim().isEmpty()) continue;//Si al leer no hay pokemons se sale del while
-					String[] partesPokemon = lineaPokemon.split(";");
-					String nombrePokemon = partesPokemon[0];
-					String estadoPokemon = partesPokemon[1];
-					//Info del pokemon
-					Pokemon poke = clonarPokemonPokedex(nombrePokemon);//Clonamos el pokemon buscando su nombre en la pokedex
-
-					if (poke != null) {//Si pokemon existe
-						poke.setEstado(estadoPokemon);//Se le pone el estado con el que quedó guardado
-						if (player.getEquipo().size() < 6) {//Añadimos los primeros 6 pokemons al equipo
-							player.getEquipo().add(poke);
-						} else {
-							player.getPc().add(poke);//Y si ya se agregaron 6 agregamos el resto a la lista pc
-						}
-					}
-				}
-				lectorRegistro.close();//Se cierra el lector
-				return player; // Retornamos objeto jugador armado
-			}
-			lectorRegistro.close();//Se cierra el lector
-		} catch (Exception e) {
-			System.out.println("Error al intentar leer el archivo Registros.txt");
-		}
-		return null;
-	}
-
-	private static Pokemon clonarPokemonPokedex(String nombrePokemon) {
-		for (Pokemon p : pokedexGlobal) {//Buscamos los pokemons en la pokedex 
-			if (p.getNombre().equalsIgnoreCase(nombrePokemon)) {//Si el nombre del pokemon de la pokedex es igual al que se buscó, se crea un objeto pokemon con los atributos guardados en la pokedex
-				// Creamos el pokemon
-				return new Pokemon(p.getNombre(), p.getHabitat(), p.getPorcentajeAparicion(), p.getVida(),
-						p.getAtaque(), p.getDefensa(), p.getAtaqueEspecial(), p.getDefensaEspecial(), p.getVelocidad(),
-						p.getTipo());
-			}
-		}
-		return null;// Si el pokemon no existe en la pokedex
-	}
 	private static void menuDeJuego(Jugador player) {
 		int opcion = 0;
 		boolean opcionValida = false;
@@ -800,7 +656,150 @@ public class App {
 			}
 		} while (opcion != 8);
 	}
+	private static void leerAltoMando() {//Guardamos en objetos y en un ArrayList al alto mando que esta en Alto Mando.txt
+		try {
+			File arch = new File("datos/Alto Mando.txt");
+			lector = new Scanner(arch);
+			while (lector.hasNextLine()) {
+				String linea = lector.nextLine();
+				String[] partes = linea.split(";");
+				// Info de miembro de alto mando
+				int numero = Integer.parseInt(partes[0]);
+				String nombre = partes[1].strip();
+				// Como todos tienen 6 pokemon no tenemos que guardar cantidad de pokemon como con los gimnasios
+				AltoMando altoMando = new AltoMando(numero, nombre);// Creamos miembro del alto mando
+				// Guardamos el equipo
+				for (int i = 0; i < 6; i++) {
+					String nombrePokemon = partes[i + 1].strip();//Guardamos el nombre
+					Pokemon poke = clonarPokemonPokedex(nombrePokemon);// Clonamos pokemon desde la Arraylist con los pokemon
+					if (poke != null) {//Si existe el pokemon, se agrega a su equipo
+						altoMando.getEquipo().add(poke);
+					}
+				}
+				altoMandoMiembros.add(altoMando);//Y finalmente se agrega a una lista con todos los del alto mando
+			}
+		} catch (Exception e) {//Si el txt no se puede leer
+			System.out.println("Error al intentar leer el archivo Alto Mando.txt");
+		}
+	}
+	private static void leerGymLeaders() {//Guardamos en objetos y en un ArrayList al alto mando que esta en Gimnasios.txt
+		try {
+			File arch = new File("datos/Gimnasios.txt");
+			lector = new Scanner(arch);
+			while (lector.hasNextLine()) {
+				String linea = lector.nextLine();
+				String partes[] = linea.split(";");// No sabia que esto tmb funciona asi lol
+				// Sacamos las cositas del lider
+				int numero = Integer.parseInt(partes[0]);
+				String lider = partes[1].strip();
+				String estado = partes[2].strip();
+				int tamañoEquipo = Integer.parseInt(partes[3]);
+				// Creamos el gimnasio pero sin equipo
+				Gimnasio gym = new Gimnasio(numero, lider, estado);
+				// Ahora vamos a guardar su equipo
+				for (int i = 0; i < tamañoEquipo; i++) {
+					String nombrePokemon = partes[4 + i].trim();
+					// Clonamos pokemon de la pokedex
+					Pokemon poke = clonarPokemonPokedex(nombrePokemon);
 
+					if (poke != null) {
+						gym.getEquipo().add(poke); // Y se agrega el pokemon clonado al equipo del lider de gym
+					}
+				}
+				lideresGym.add(gym);//Y se agrega a la Arraylist con todos los gimnasios
+			}
+		} catch (Exception e) {
+			System.out.println("Error al intentar leer el archivo Gimnasios.txt");
+		}
+	}
+	private static void leerPokedex() throws FileNotFoundException {//Se lee crea y guardan los pokemon
+		File arch = new File("datos/Pokedex.txt");
+		lector = new Scanner(arch);
+		while (lector.hasNextLine()) {
+			String linea = lector.nextLine();
+			String[] partes = linea.split(";");
+			//Informacion de los pokemon
+			String nombre = partes[0].strip();
+			String habitat = partes[1].strip();
+			double porcentajeAparicion = Double.parseDouble(partes[2].strip());
+			int vida = Integer.parseInt(partes[3].strip());
+			int ataque = Integer.parseInt(partes[4].strip());
+			int defensa = Integer.parseInt(partes[5].strip());
+			int ataqueEspecial = Integer.parseInt(partes[6].strip());
+			int defensaEspecial = Integer.parseInt(partes[7].strip());
+			int velocidad = Integer.parseInt(partes[8].strip());
+			String tipo = partes[9].strip();
+			// Ya guardado toda la info ahora creamos el objeto con los atributos
+			Pokemon nuevoPokemon = new Pokemon(nombre, habitat, porcentajeAparicion, vida, ataque, defensa,
+					ataqueEspecial, defensaEspecial, velocidad, tipo);
+			pokedexGlobal.add(nuevoPokemon);//Se agrega el pokemon a la pokedex que es un Arraylist
+		}
+	}
+
+	private static Jugador cargarPartida() {
+		File arch = new File("datos/Registros.txt");
+		if (!arch.exists() || arch.length() == 0) {//Se comprueba si es que Registros.txt existe o si tiene texto
+			return null;
+		}
+		try {
+			Scanner lectorRegistro = new Scanner(arch);
+			if (lectorRegistro.hasNextLine()) {
+				// leer datos
+				String linea = lectorRegistro.nextLine();
+				String[] partes = linea.split(";");
+				//Se crea un jugador con el nombre en Registros.txt
+				Jugador player = new Jugador(partes[0]);
+
+				for (int i = 1; i < partes.length; i++) {//Se guarda los gimnasios derrotados y alto mando derrotado
+					player.getDerrotados().add(partes[i]);//Se agregan a una lista para luego contarlos para conseguir las medallas como un int
+					if(partes[partes.length-1] == "Alto Mando") {//Para cuando llegue a leer el alto mando derrotado no llegue a leer lo de abajo y me de un error de index out of bounds
+						break;
+					}
+					if (lideresGym.get(i - 1).getLider().equals(player.getDerrotados().get(i - 1))) {//Cambiamos el estado de los gimnasios segun si estan en Registros.txt
+						lideresGym.get(i - 1).setEstado("Derrotado");
+					}
+				}
+				player.setMedallas(player.getDerrotados().size());// Arraylist = size | Lista[] = lenght
+				// Vemos que pokemons estan guardados
+				while (lectorRegistro.hasNextLine()) {
+					String lineaPokemon = lectorRegistro.nextLine();
+					if (lineaPokemon.trim().isEmpty()) continue;//Si al leer no hay pokemons se sale del while
+					String[] partesPokemon = lineaPokemon.split(";");
+					String nombrePokemon = partesPokemon[0];
+					String estadoPokemon = partesPokemon[1];
+					//Info del pokemon
+					Pokemon poke = clonarPokemonPokedex(nombrePokemon);//Clonamos el pokemon buscando su nombre en la pokedex
+
+					if (poke != null) {//Si pokemon existe
+						poke.setEstado(estadoPokemon);//Se le pone el estado con el que quedó guardado
+						if (player.getEquipo().size() < 6) {//Añadimos los primeros 6 pokemons al equipo
+							player.getEquipo().add(poke);
+						} else {
+							player.getPc().add(poke);//Y si ya se agregaron 6 agregamos el resto a la lista pc
+						}
+					}
+				}
+				lectorRegistro.close();//Se cierra el lector
+				return player; // Retornamos objeto jugador armado
+			}
+			lectorRegistro.close();//Se cierra el lector
+		} catch (Exception e) {
+			System.out.println("Error al intentar leer el archivo Registros.txt");
+		}
+		return null;
+	}
+
+	private static Pokemon clonarPokemonPokedex(String nombrePokemon) {
+		for (Pokemon p : pokedexGlobal) {//Buscamos los pokemons en la pokedex 
+			if (p.getNombre().equalsIgnoreCase(nombrePokemon)) {//Si el nombre del pokemon de la pokedex es igual al que se buscó, se crea un objeto pokemon con los atributos guardados en la pokedex
+				// Creamos el pokemon
+				return new Pokemon(p.getNombre(), p.getHabitat(), p.getPorcentajeAparicion(), p.getVida(),
+						p.getAtaque(), p.getDefensa(), p.getAtaqueEspecial(), p.getDefensaEspecial(), p.getVelocidad(),
+						p.getTipo());
+			}
+		}
+		return null;// Si el pokemon no existe en la pokedex
+	}
 	private static int obtenerIndiceTipo(String tipo) {
 		for (int i = 0; i < tipos.length; i++) {
 			if (tipos[i].equalsIgnoreCase(tipo.trim())) {
