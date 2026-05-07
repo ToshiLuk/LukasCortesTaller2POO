@@ -1,13 +1,1 @@
-Dogchow;EmmaLaArdillaRabiosa;MartinNegro
-Poliwrath;Vivo
-Scizor;Vivo
-Noivern;Vivo
-Crobat;Vivo
-Lapras;Vivo
-Porygon-Z;Vivo
-Arbok;Vivo
-Dracovish;Vivo
-Aggron;Vivo
-Victreebel;Vivo
-Shiftry;Vivo
-Froslass;Vivo
+
