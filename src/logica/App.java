@@ -204,56 +204,86 @@ public class App {
 				break;
 			case 3:
 				cont = 0;
-				opcion = 0;
 				System.out.println("\n=== Acceso al PC ===");
 				System.out.println("Equipo:");
-				for (Pokemon p : player.getEquipo()) {// Printeamos equipo
-					cont += 1;
-					System.out.println(
-							cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
+				for (Pokemon p : player.getEquipo()) {
+					cont++;
+					// Usa tu método  o el equivalente que tengas
+					System.out.println(cont + ") " + p.getNombre() + " | " + p.getTipo() + " | Stats totales: " + p.getStats());
 				}
 				System.out.println("=======================");
 				System.out.println("PC:");
-				for (Pokemon p : player.getPc()) {// Printeamos el pc sin resetear el contador
-					cont += 1;
-					System.out.println(
-							cont + ") " + p.getNombre() + "|" + p.getTipo() + "|Stats totales: " + p.getStats());
+				for (Pokemon p : player.getPc()) {
+					cont++;
+					System.out.println(cont + ") " + p.getNombre() + " | " + p.getTipo() + " | Stats totales: " + p.getStats());
 				}
 				System.out.println("=======================");
 				System.out.println("1) Cambiar Pokemon.");
 				System.out.println("2) Salir.");
 				System.out.print("> ");
-				opcion = Integer.parseInt(sc.nextLine());
-				if (opcion == 2) {
+				int opcionPc = Integer.parseInt(sc.nextLine());
+
+				if (opcionPc == 2) {
 					System.out.println("Se desconectó del PC...");
-				} else if (opcion == 1) {
-					if (player.getPc().isEmpty() && player.getEquipo().isEmpty()) {
-						System.out.println("\nNo tienes Pokemons para intercambiar.");
+					
+				} else if (opcionPc == 1) {
+					int totalPokemons = player.getEquipo().size() + player.getPc().size();
+
+					if (totalPokemons < 2) {
+						System.out.println("\nNo tienes suficientes Pokemons para intercambiar.");
 						break;
 					}
-					System.out.println("¿Que Pokemon va a cambiar?(Ingrese su indice)");
+
+					System.out.println("¿Que Pokemon va a cambiar? (Ingrese su numero)");
 					System.out.print("> ");
-					int opcionPr = Integer.parseInt(sc.nextLine());
-					System.out.println("¿Cual es el segundo Pokemon?(Ingrese el indice)");
-					System.out.print(">");
-					int opcionSe = Integer.parseInt(sc.nextLine());
-					int indicePr = opcionPr - 1;
-					int indiceSe = opcionSe - 1 - player.getEquipo().size();
-					if ((indicePr <7 && indicePr >-1) || (indicePr>6)) {//SIGO CAMBIANDO
-						// Guardamos ambos pokemon
-						Pokemon auxE = player.getEquipo().get(indiceEquipo);
-						Pokemon auxPC = player.getPc().get(indicePC);
-						// .set para cambiar los arraylist
-						player.getEquipo().set(indiceEquipo, auxPC);
-						player.getPc().set(indicePC, auxE);
+					int num1 = Integer.parseInt(sc.nextLine());
+
+					System.out.println("¿Cual es el segundo Pokemon? (Ingrese el numero)");
+					System.out.print("> ");
+					int num2 = Integer.parseInt(sc.nextLine());
+
+					//Validaciones de seguridad
+					if (num1 == num2) {
+						System.out.println("\nError: Seleccionó al mismo Pokemon dos veces...");
+					} else if (num1 < 1 || num1 > totalPokemons || num2 < 1 || num2 > totalPokemons) {
+						System.out.println("\nError: Numeros ingresados fuera de rango.");
+					} else {
+						
+
+						//Rescate de objetos
+						int sizeEquipo = player.getEquipo().size();
+
+						//Pokemon 1
+						//Si el número es menor o igual al tamaño del equipo, está en el equipo.
+						boolean esEquipo1 = (num1 <= sizeEquipo); 
+						// Si está en el equipo, restamos 1. Si está en el PC, restamos 1 y el tamaño del equipo.
+						int indexReal1 = esEquipo1 ? (num1 - 1) : (num1 - 1 - sizeEquipo);
+						Pokemon aux1 = esEquipo1 ? player.getEquipo().get(indexReal1) : player.getPc().get(indexReal1);
+
+						//Pokemon 2
+						boolean esEquipo2 = (num2 <= sizeEquipo);
+						int indexReal2 = esEquipo2 ? (num2 - 1) : (num2 - 1 - sizeEquipo);
+						Pokemon aux2 = esEquipo2 ? player.getEquipo().get(indexReal2) : player.getPc().get(indexReal2);
+						
+						//Intercambio
+						// Ponemos el Pokemon 2 en la posición que ocupaba el Pokemon 1
+						if (esEquipo1) {
+							player.getEquipo().set(indexReal1, aux2);
+						} else {
+							player.getPc().set(indexReal1, aux2);
+						}
+
+						// Ponemos el Pokemon 1 en la posición que ocupaba el Pokemon 2
+						if (esEquipo2) {
+							player.getEquipo().set(indexReal2, aux1);
+						} else {
+							player.getPc().set(indexReal2, aux1);
+						}
 
 						System.out.println("\n¡Intercambio exitoso!");
-						System.out.println(auxPC.getNombre() + " ahora está en tu equipo.");
-					} else {
-						System.out.println("\nError: Numeros ingresados fuera de rango.");
+						System.out.println(aux1.getNombre() + " intercambió su lugar con " + aux2.getNombre() + ".");
 					}
 				}
-
 				break;
 			case 4:
 				System.out.println("\nA cual Lider deseas retar??\n");
